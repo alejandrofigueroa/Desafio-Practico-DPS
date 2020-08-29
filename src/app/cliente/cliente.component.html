@@ -1,1 +1,32 @@
-<p>cliente works!</p>
+<div class="header">
+    <h1>Datos de los Clientes</h1>
+    <p>Ingrese los datos de los clientes</p>
+</div>
+<label>Nombre:</label>
+<input type="text" required [(ngModel)]="nombre">
+<label>DUI:</label>
+<input type="text" required [(ngModel)]="dui">
+<label>Vehiculo:</label>
+<input type="text" required [(ngModel)]="vehiculo">
+<label>Costo de Reparación:</label>
+<input type="number" required [(ngModel)]="costo">
+<button class="button" (click)="ingresarCliente()">Ingresar</button>
+<br/><br/>
+<table [hidden]="contador == 0">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>DUI</th>
+            <th>Vehiculo</th>
+            <th>Costo</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let clientes of registro">
+            <td>{{clientes.nombre}}</td>
+            <td>{{clientes.dui}}</td>
+            <td>{{clientes.vehiculo}}</td>
+            <td>{{clientes.costo}}</td>
+        </tr>
+    </tbody>
+</table>
