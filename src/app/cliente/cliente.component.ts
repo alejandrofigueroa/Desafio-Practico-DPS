@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ThrowStmt } from '@angular/compiler';
+import {FormGroup, FormControl, FormBuilder, Validators} from "@angular/forms";
+import { isRegExp } from 'util';
 
 @Component({
   selector: 'app-cliente',
@@ -17,8 +19,8 @@ export class ClienteComponent implements OnInit {
   dui:string;
   vehiculo:string;
   costo:number;
-
   contador:number;
+  dui_validation = '^[0-9]{8}-[0-9]{1}$';
 
   constructor() { }
 
@@ -28,35 +30,50 @@ export class ClienteComponent implements OnInit {
     this.vehiculo = "";
     this.costo = 0;
     this.contador = 0;
+    
+    
   }
 
 
   ingresarCliente(){
-    var monto:number = this.costo;
-    this.check={"dui":this.dui, "contador":0};
-    var verificar = this.verificacion.find(x => x.dui == this.dui);
+    if(!this.nombre.match("") || !this.dui.match("") || !this.vehiculo.match("") || this.costo > 0){
+      if(this.dui.match(this.dui_validation)){
+          var monto:number = this.costo;
+          var descuento:string = "No";
+          this.check={"dui":this.dui, "contador":0};
+          var verificar = this.verificacion.find(x => x.dui == this.dui);
+          
 
-    if(verificar){ //Verificar si existe el DUI
-      verificar.contador++;
+          if(verificar){ //Verificar si existe el DUI
+            verificar.contador++;
+            
+            if(verificar.contador == 2){
+                monto = this.costo - (this.costo * 0.05);
+                descuento = "Del 5%";
+            }else if(verificar.contador >= 4){
+                monto = this.costo - (this.costo * 0.10);
+                descuento = "Del 10%";
+            }
+            this.check={"dui":this.dui, "contador":verificar.contador};
+            
+          }else{ //Si no existe.
+            this.verificacion.push(this.check);
+          }
 
-      if(verificar.contador == 2){
-          monto = this.costo - (this.costo * 0.05);
-      }else if(verificar.contador >= 4){
-          monto = this.costo - (this.costo * 0.10);
+          this.clientes={"nombre":this.nombre, "dui":this.dui, "vehiculo":this.vehiculo, "costo":monto, "descuento":descuento};
+          this.registro.push(this.clientes);
+          
+          this.contador++;
+      }else{
+          alert("No va con relacion al formato del DUI");
       }
-      this.check={"dui":this.dui, "contador":verificar.contador};
-      
-    }else{ //Si no existe.
-      this.verificacion.push(this.check);
+    }else{
+      alert("No se permiten campos vacios y valores negativos");
     }
-
-    this.clientes={"nombre":this.nombre, "dui":this.dui, "vehiculo":this.vehiculo, "costo":monto};
-    this.registro.push(this.clientes);
-    
-    this.contador++;
     
 
   }
+
  
 
 }
